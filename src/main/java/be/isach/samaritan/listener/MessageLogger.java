@@ -16,7 +16,7 @@ public class MessageLogger implements EventListener {
     private static final DateFormat df = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss.SSS");
 
     public void onUserChat(UserChatEvent event) {
-        String msg = df.format("[MESSAGE] " + new Date()) + " - " + event.getUser().getUser().getUsername() + " -> " + event.getMsg().getMessage();
+        String msg = "[MESSAGE] " + df.format(new Date()) + " - " + event.getUser().getUser().getUsername() + " -> " + event.getMsg().getMessage();
         System.out.println(msg);
         Samaritan.logger.info(msg);
     }

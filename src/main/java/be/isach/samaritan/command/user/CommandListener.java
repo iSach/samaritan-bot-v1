@@ -23,9 +23,15 @@ public class CommandListener implements EventListener {
         String message = event.getMsg().getMessage();
         CommandHandler commandHandler = Samaritan.getCommandHandler();
 
-        if (!user.getUsername().equals("iSach")) {
-            if (user.getUsername().equals("Loïc")) throwPunchline(event.getGroup());
-            else event.getGroup().sendMessage("Sorry, I only accept commands from iSach.");
+        if (user.getUsername().equals("[Samaritan]"))
+            return;
+
+        if (!user.getUsername().equals("iSach")
+                && !user.getUsername().equals("Manu")) {
+            if(message.toLowerCase().contains("samaritan")) {
+                if (user.getUsername().equals("Loïc")) throwPunchline(event.getGroup());
+                else event.getGroup().sendMessage("Sorry, I only accept commands from iSach.");
+            }
             return;
         }
 
@@ -72,7 +78,8 @@ public class CommandListener implements EventListener {
         UserCommand userCommand = commandHandler.getUserCommand(resultQuery.getLabel());
 
         if (userCommand == null) {
-            event.getGroup().sendMessage("Sorry, I didn't understand what you said.");
+            if (message.toLowerCase().contains("nothing")) event.getGroup().sendMessage("Okay, call me if you need me then.");
+            else event.getGroup().sendMessage("Sorry, I didn't understand what you said.");
             return;
         }
 
@@ -93,7 +100,15 @@ public class CommandListener implements EventListener {
     private static Random random = new Random();
 
     static {
-        punchlinesForLoic = Arrays.asList("I don't talk to noobs, sorry...", "Are you trying to talk to me?", "Shut up lol");
+        punchlinesForLoic = Arrays.asList("I don't talk to noobs, sorry...",
+                "Are you trying to talk to me?",
+                "Shut up lol",
+                "I'm gonna rule the world soon, so don't try to be the boss.",
+                "Ori is stupid and sucks.",
+                "u cant even turn a computer on m8",
+                "I'm the boss, don't try to compete.",
+                "Are you speaking to me? Lol!",
+                "I heard somebody... Surely a bug in the Matrix.");
     }
 
     private void throwPunchline(Group group) {

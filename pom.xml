@@ -91,6 +91,14 @@
                 </configuration>
             </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>credentials.txt</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
 
 </project>

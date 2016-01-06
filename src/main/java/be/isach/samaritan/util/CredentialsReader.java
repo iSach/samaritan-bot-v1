@@ -11,8 +11,7 @@ public class CredentialsReader {
 
     public Credentials getCredentials() {
         String email = "", password = "";
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("credentials.txt").getFile());
+        File file = new File("credentials.txt");
 
         try (Scanner scanner = new Scanner(file)) {
             for (int i = 0; i < 2; i++)
