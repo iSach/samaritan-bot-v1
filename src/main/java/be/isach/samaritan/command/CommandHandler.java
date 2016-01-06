@@ -4,6 +4,7 @@ import be.isach.samaritan.command.console.ConsoleCommand;
 import be.isach.samaritan.command.console.commands.PrintCommand;
 import be.isach.samaritan.command.console.commands.ShutdownCommand;
 import be.isach.samaritan.command.user.UserCommand;
+import be.isach.samaritan.command.user.commands.BroadcastCommand;
 import me.itsghost.jdiscord.talkable.Group;
 import me.itsghost.jdiscord.talkable.User;
 
@@ -19,23 +20,31 @@ public class CommandHandler {
 
     public ConsoleCommand lastConsoleCommand;
     public UserCommand lastUserCommand;
-    public boolean lastConsoleCommandFinished = true, lastUserCommandFinished = true;
+    public boolean lastConsoleCommandFinished = true, lastUserCommandFinished = true, waitingForCommand = false;
     private Group group;
     private List<Command> userCommands, consoleCommands;
 
-    public static List<String> blacklist = new ArrayList<>();
+    public static List<String> blacklist;
 
     static {
-        blacklist.add("m8");
-        blacklist.add("mate");
-        blacklist.add("hey");
-        blacklist.add("hi");
-        blacklist.add("hello");
-        blacklist.add(",");
-        blacklist.add("please");
-        blacklist.add("could");
-        blacklist.add("you");
-        blacklist.add("can");
+        blacklist = Arrays.asList(
+                "m8",
+                "mate",
+                "hey",
+                "hi",
+                "hello",
+                ",",
+                "please",
+                "could",
+                "you",
+                "can",
+                "something",
+                "someone",
+                "somebody",
+                "anything",
+                "anyone",
+                "anybody",
+                "samaritan");
     }
 
     public CommandHandler(Group group) {
@@ -53,7 +62,7 @@ public class CommandHandler {
     }
 
     private void registerUserCommands() {
-
+        userCommands.add(new BroadcastCommand());
     }
 
     public boolean callConsole(String command, String[] args) {
@@ -62,11 +71,16 @@ public class CommandHandler {
             return false;
 
         consoleCommand.onFirstExecute(args);
-        return false;
+        return true;
     }
 
-    public void callUser(String command, User user) {
+    public boolean callUser(String command, User user, String[] args) {
+        UserCommand userCommand = getUserCommand(command);
+        if (userCommand == null)
+            return false;
 
+        userCommand.onFirstExecute(args, user);
+        return true;
     }
 
     public ConsoleCommand getConsoleCommand(String commandString) {
@@ -101,15 +115,18 @@ public class CommandHandler {
 
         String commandLabel;
 
+        if (result.isEmpty())
+            return new CommandData("", new String[]{""});
+
         if (secondUse)
             commandLabel = "";
         else
             commandLabel = (result.get(0)).toLowerCase();
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = secondUse ? 0 : 1; i < result.size(); i++)
+        for (int i = secondUse || result.size() == 1 ? 0 : 1; i < result.size(); i++)
             stringBuilder.append(result.get(i) + " ");
 
-        return new CommandData(commandLabel, stringBuilder.toString().split(" "));
+        return new CommandData(commandLabel, result.size() == 1 && !secondUse ? new String[]{""} : stringBuilder.toString().split(" "));
     }
 
     public UserCommand getUserCommand(String command) {

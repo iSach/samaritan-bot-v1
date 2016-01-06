@@ -14,6 +14,7 @@ public class Helper {
     public static void shutdown() {
         System.out.println("Instruction successfully received. Shutting down...");
 //        broadcast("Command received from console to shutdown. Goodbye!");
+        Samaritan.api.stop();
         System.exit(0);
     }
 
