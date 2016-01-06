@@ -18,7 +18,7 @@ public class Helper {
     }
 
     public static void print(Object object) {
-        System.out.println(object);
+        System.out.println("Samaritan > " + object);
     }
 
 }

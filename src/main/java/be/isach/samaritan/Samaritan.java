@@ -6,6 +6,8 @@ import be.isach.samaritan.command.console.ConsoleCommand;
 import be.isach.samaritan.listener.MainListener;
 import be.isach.samaritan.listener.MessageLogger;
 import be.isach.samaritan.listener.NewUserListener;
+import be.isach.samaritan.util.Credentials;
+import be.isach.samaritan.util.CredentialsReader;
 import me.itsghost.jdiscord.DiscordAPI;
 import me.itsghost.jdiscord.DiscordBuilder;
 import me.itsghost.jdiscord.Server;
@@ -26,7 +28,14 @@ public class Samaritan {
     private static Group botTestGroup;
     private static Server server;
 
+    private static String emailAddress, password;
+
     public static void main(String[] args) {
+
+        CredentialsReader credentialsReader = new CredentialsReader();
+        Credentials credentials = credentialsReader.getCredentials();
+        emailAddress = credentials.getEmailAddress();
+        password = credentials.getPassword();
 
         login();
 
@@ -97,7 +106,7 @@ public class Samaritan {
 
     private static void login() {
         try {
-            api = new DiscordBuilder("contact@isach.be", "samaritan").build().login();
+            api = new DiscordBuilder(emailAddress, password).build().login();
         } catch (NoLoginDetailsException e) {
             e.printStackTrace();
         } catch (BadUsernamePasswordException e) {
