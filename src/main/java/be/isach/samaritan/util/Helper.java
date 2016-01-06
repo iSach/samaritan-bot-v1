@@ -19,6 +19,7 @@ public class Helper {
     }
 
     public static void print(Object object) {
+        Samaritan.logger.info(object.toString());
         System.out.println("Samaritan > " + object);
     }
 

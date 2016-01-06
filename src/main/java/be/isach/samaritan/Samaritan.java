@@ -8,12 +8,19 @@ import be.isach.samaritan.listener.MessageLogger;
 import be.isach.samaritan.listener.NewUserListener;
 import be.isach.samaritan.util.Credentials;
 import be.isach.samaritan.util.CredentialsReader;
+import be.isach.samaritan.util.LogFormatter;
 import me.itsghost.jdiscord.DiscordAPI;
 import me.itsghost.jdiscord.DiscordBuilder;
 import me.itsghost.jdiscord.Server;
 import me.itsghost.jdiscord.exception.BadUsernamePasswordException;
 import me.itsghost.jdiscord.exception.DiscordFailedToConnectException;
 import me.itsghost.jdiscord.exception.NoLoginDetailsException;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
 
 /**
  * Created by Sacha on 22/12/15.
@@ -26,7 +33,27 @@ public class Samaritan {
 
     private static String emailAddress, password;
 
+    public static Logger logger;
+
     public static void main(String[] args) {
+
+        String date = new SimpleDateFormat("kk-mm-ss-dd-MM-yyyy").format(new Date());
+
+        logger = Logger.getLogger("Samaritan-" + date);
+        FileHandler fh;
+
+        try {
+            String path = "logs/" + date + ".log";
+            fh = new FileHandler(path);
+            logger.addHandler(fh);
+            fh.setFormatter(new LogFormatter());
+            logger.info("Starting.");
+
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         CredentialsReader credentialsReader = new CredentialsReader();
         Credentials credentials = credentialsReader.getCredentials();

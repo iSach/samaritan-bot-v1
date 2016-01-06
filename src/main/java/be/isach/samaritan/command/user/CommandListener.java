@@ -6,9 +6,12 @@ import be.isach.samaritan.command.CommandHandler;
 import be.isach.samaritan.util.Helper;
 import me.itsghost.jdiscord.event.EventListener;
 import me.itsghost.jdiscord.events.UserChatEvent;
+import me.itsghost.jdiscord.talkable.Group;
 import me.itsghost.jdiscord.talkable.User;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Sacha on 4/01/16.
@@ -20,8 +23,11 @@ public class CommandListener implements EventListener {
         String message = event.getMsg().getMessage();
         CommandHandler commandHandler = Samaritan.getCommandHandler();
 
-        if (!user.getUsername().equals("iSach"))
+        if (!user.getUsername().equals("iSach")) {
+            if (user.getUsername().equals("Loïc")) throwPunchline(event.getGroup());
+            else event.getGroup().sendMessage("Sorry, I only accept commands from iSach.");
             return;
+        }
 
         CommandData resultQuery = Samaritan.getCommandHandler().filter(message, false);
 
@@ -81,5 +87,16 @@ public class CommandListener implements EventListener {
 
         if (!Samaritan.commandHandler.callConsole(resultQuery.getLabel(), resultQuery.getArgs()))
             System.out.println("Unknown Command. 'help' for all commands.");
+    }
+
+    private static List<String> punchlinesForLoic;
+    private static Random random = new Random();
+
+    static {
+        punchlinesForLoic = Arrays.asList("I don't talk to noobs, sorry...", "Are you trying to talk to me?", "Shut up lol");
+    }
+
+    private void throwPunchline(Group group) {
+        group.sendMessage(punchlinesForLoic.get(random.nextInt(punchlinesForLoic.size())));
     }
 }
