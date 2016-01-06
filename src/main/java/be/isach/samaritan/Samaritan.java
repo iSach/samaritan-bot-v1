@@ -97,7 +97,7 @@ public class Samaritan {
 
     private static void login() {
         try {
-            api = new DiscordBuilder("contact@isach.be", "samaritan").build().login();
+            api = new DiscordBuilder("terhrjfe", "dfrezf").build().login();
         } catch (NoLoginDetailsException e) {
             e.printStackTrace();
         } catch (BadUsernamePasswordException e) {
