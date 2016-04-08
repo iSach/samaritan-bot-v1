@@ -31,7 +31,9 @@ public abstract class Command {
 
     public boolean equals(String command) {
         final String finalCommand = command.toLowerCase();
-        return finalCommand.equals(label)
+        return finalCommand.equalsIgnoreCase(label)
                 || Arrays.asList(aliases).contains(finalCommand);
     }
+    
+
 }

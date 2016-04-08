@@ -3,7 +3,7 @@ package be.isach.samaritan.command.console;
 import be.isach.samaritan.Samaritan;
 import be.isach.samaritan.command.CommandData;
 import be.isach.samaritan.command.CommandHandler;
-import me.itsghost.jdiscord.talkable.Group;
+import net.dv8tion.jda.entities.MessageChannel;
 
 import java.util.Scanner;
 
@@ -12,19 +12,22 @@ import java.util.Scanner;
  */
 public class ConsoleListener extends Thread {
 
-    private static Group botTestGroup;
+    private static MessageChannel botTestChannel;
 
     @Override
     public void run() {
         final Scanner scanner = new Scanner(System.in);
-        try {
-            Thread.sleep(1500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        botTestGroup = Samaritan.api.getAvailableServers().get(0).getGroups().get(Samaritan.api.getAvailableServers().get(0).getGroups().size() - 1);
-        Samaritan.server = Samaritan.api.getAvailableServers().get(0);
-        Samaritan.commandHandler = new CommandHandler(botTestGroup);
+
+        while (Samaritan.api.getGuilds().size() < 1)
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        botTestChannel = Samaritan.api.getGuilds().get(0).getTextChannels().get(0);
+//        Samaritan.server = Samaritan.api.getGuilds().get(0);
+        Samaritan.commandHandler = new CommandHandler(botTestChannel);
         while (true) {
             try {
                 String nextLine = scanner.nextLine();

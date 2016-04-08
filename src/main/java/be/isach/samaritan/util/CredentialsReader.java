@@ -14,16 +14,8 @@ public class CredentialsReader {
         File file = new File("credentials.txt");
 
         try (Scanner scanner = new Scanner(file)) {
-            for (int i = 0; i < 2; i++)
-                if (scanner.hasNextLine())
-                    switch (i) {
-                        case 0:
-                            email = scanner.nextLine();
-                            break;
-                        case 1:
-                            password = scanner.nextLine();
-                            break;
-                    }
+            email = scanner.hasNextLine() ? scanner.nextLine() : "unknown";
+            password = scanner.hasNextLine() ? scanner.nextLine() : "unknown";
             scanner.close();
         } catch (IOException e) {
             e.printStackTrace();

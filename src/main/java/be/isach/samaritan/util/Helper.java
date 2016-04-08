@@ -1,6 +1,8 @@
 package be.isach.samaritan.util;
 
 import be.isach.samaritan.Samaritan;
+import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.TextChannel;
 
 /**
  * Created by Sacha on 5/01/16.
@@ -8,13 +10,19 @@ import be.isach.samaritan.Samaritan;
 public class Helper {
 
     public static void broadcast(Object object) {
-        Samaritan.getServer().getGroups().forEach(server -> server.sendMessage(object.toString()));
+        Guild guild = Samaritan.api.getGuilds().get(0);
+        for(TextChannel textChannel : guild.getTextChannels())
+            try {
+                textChannel.sendMessage(object.toString());
+            } catch (Exception exc) {
+                continue;
+            }
     }
 
     public static void shutdown() {
         System.out.println("Instruction successfully received. Shutting down...");
-//        broadcast("Command received from console to shutdown. Goodbye!");
-        Samaritan.api.stop();
+        broadcast("Command received from console to shutdown. Goodbye!");
+        Samaritan.api.shutdown();
         System.exit(0);
     }
 

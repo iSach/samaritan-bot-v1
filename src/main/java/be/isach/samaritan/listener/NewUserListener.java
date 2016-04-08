@@ -1,17 +1,26 @@
 package be.isach.samaritan.listener;
 
-import me.itsghost.jdiscord.event.EventListener;
-import me.itsghost.jdiscord.events.UserJoinedChat;
-import me.itsghost.jdiscord.talkable.Group;
+import net.dv8tion.jda.hooks.ListenerAdapter;
 
 /**
  * Created by Sacha on 24/12/15.
  */
-public class NewUserListener implements EventListener {
+public class NewUserListener extends ListenerAdapter {
 
-    public void onUserJoined(UserJoinedChat event) {
-        for(Group group : event.getServer().getGroups())
-            group.sendMessage("Welcome " + event.getGroupUser().getUser().getUsername() + "!");
-    }
+
+
+//    @Override
+//    public void onUserJoined(UserJoinEvent event) {
+//        for (IChannel group : event.getGuild().getChannels())
+//            try {
+//                group.sendMessage("Welcome " + event.getUser().getName() + "!");
+//            } catch (MissingPermissionsException e) {
+//                e.printStackTrace();
+//            } catch (HTTP429Exception e) {
+//                e.printStackTrace();
+//            } catch (DiscordException e) {
+//                e.printStackTrace();
+//            }
+//    }
 
 }

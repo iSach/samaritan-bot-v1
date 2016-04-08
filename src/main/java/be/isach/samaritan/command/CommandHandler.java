@@ -5,8 +5,9 @@ import be.isach.samaritan.command.console.commands.PrintCommand;
 import be.isach.samaritan.command.console.commands.ShutdownCommand;
 import be.isach.samaritan.command.user.UserCommand;
 import be.isach.samaritan.command.user.commands.BroadcastCommand;
-import me.itsghost.jdiscord.talkable.Group;
-import me.itsghost.jdiscord.talkable.User;
+import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.MessageChannel;
+import net.dv8tion.jda.entities.User;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +22,7 @@ public class CommandHandler {
     public ConsoleCommand lastConsoleCommand;
     public UserCommand lastUserCommand;
     public boolean lastConsoleCommandFinished = true, lastUserCommandFinished = true, waitingForCommand = false;
-    private Group group;
+    private MessageChannel messageChannel;
     private List<Command> userCommands, consoleCommands;
 
     public static List<String> blacklist;
@@ -47,8 +48,8 @@ public class CommandHandler {
                 "samaritan");
     }
 
-    public CommandHandler(Group group) {
-        this.group = group;
+    public CommandHandler(MessageChannel group) {
+        this.messageChannel = group;
         this.consoleCommands = new ArrayList<>();
         this.userCommands = new ArrayList<>();
 
@@ -74,12 +75,12 @@ public class CommandHandler {
         return true;
     }
 
-    public boolean callUser(String command, User user, String[] args) {
+    public boolean callUser(String command, User user, String[] args, Guild guild) {
         UserCommand userCommand = getUserCommand(command);
         if (userCommand == null)
             return false;
 
-        userCommand.onFirstExecute(args, user);
+        userCommand.onFirstExecute(args, user, guild);
         return true;
     }
 
@@ -95,12 +96,13 @@ public class CommandHandler {
             temporaryArray[i] = originList.get(i);
 
         int currentIndex = 0;
+
         for (String string : originList) {
             String toReplace = string.replace("!", "").replace("?", "").replace(".", "").replace(",", "");
-            if (string.isEmpty() || CommandHandler.blacklist.contains(toReplace.toLowerCase()))
+            if (string.isEmpty()
+                    || CommandHandler.blacklist.contains(toReplace.toLowerCase()))
                 temporaryArray[currentIndex] = null;
-            else
-                temporaryArray[currentIndex] = toReplace;
+            else temporaryArray[currentIndex] = toReplace;
             currentIndex++;
         }
 
@@ -136,7 +138,16 @@ public class CommandHandler {
     private Command getCommand(String c, boolean console) {
         List<Command> commands = console ? consoleCommands : userCommands;
         final Command[] commandsArray = {null};
-        commands.stream().filter(command -> command.equals(c)).forEach(command -> commandsArray[0] = command);
+        System.out.println("--------------");
+        System.out.println("Getting command for: " + c);
+        commands.stream().filter(command ->
+            command.equals(c)
+        ).forEach(command -> {
+            System.out.println("adding!!!");
+            commandsArray[0] = command;
+        });
+        System.out.println(Arrays.asList(commandsArray));
+        System.out.println("--------------");
         return commandsArray[0];
     }
 

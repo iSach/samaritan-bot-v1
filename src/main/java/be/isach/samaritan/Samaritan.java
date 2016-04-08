@@ -9,13 +9,10 @@ import be.isach.samaritan.listener.NewUserListener;
 import be.isach.samaritan.util.Credentials;
 import be.isach.samaritan.util.CredentialsReader;
 import be.isach.samaritan.util.LogFormatter;
-import me.itsghost.jdiscord.DiscordAPI;
-import me.itsghost.jdiscord.DiscordBuilder;
-import me.itsghost.jdiscord.Server;
-import me.itsghost.jdiscord.exception.BadUsernamePasswordException;
-import me.itsghost.jdiscord.exception.DiscordFailedToConnectException;
-import me.itsghost.jdiscord.exception.NoLoginDetailsException;
+import net.dv8tion.jda.JDA;
+import net.dv8tion.jda.JDABuilder;
 
+import javax.security.auth.login.LoginException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,9 +24,8 @@ import java.util.logging.Logger;
  */
 public class Samaritan {
 
-    public static DiscordAPI api = null;
+    public static JDA api = null;
     public static CommandHandler commandHandler;
-    public static Server server;
 
     private static String emailAddress, password;
 
@@ -60,34 +56,34 @@ public class Samaritan {
         emailAddress = credentials.getEmailAddress();
         password = credentials.getPassword();
 
-        login();
-
-        api.getEventManager().registerListener(new MainListener(api));
-        api.getEventManager().registerListener(new NewUserListener());
-        api.getEventManager().registerListener(new CommandListener());
-        api.getEventManager().registerListener(new MessageLogger());
-
+        try {
+            JDABuilder jdaBuilder = new JDABuilder();
+            jdaBuilder.addListener(new MainListener());
+            jdaBuilder.addListener(new NewUserListener());
+            jdaBuilder.addListener(new CommandListener());
+            jdaBuilder.addListener(new MessageLogger());
+            jdaBuilder.setEmail(emailAddress);
+            jdaBuilder.setPassword(password);
+            api = jdaBuilder.buildBlocking();
+        } catch (LoginException e) {
+            exitInvalidLogin();
+        } catch (InterruptedException e) {
+            exitInvalidLogin();
+        }
         new ConsoleListener().run();
+
     }
 
-    public static Server getServer() {
-        return server;
+    private static void exitInvalidLogin() {
+        logger.info("Failed to log. Sorry father.");
+        logger.info("Email: " + emailAddress);
+        logger.info("Password: " + password);
+        System.exit(0);
+        return;
     }
 
     public static CommandHandler getCommandHandler() {
         return commandHandler;
-    }
-
-    private static void login() {
-        try {
-            api = new DiscordBuilder(emailAddress, password).build().login();
-        } catch (NoLoginDetailsException e) {
-            e.printStackTrace();
-        } catch (BadUsernamePasswordException e) {
-            e.printStackTrace();
-        } catch (DiscordFailedToConnectException e) {
-            e.printStackTrace();
-        }
     }
 
 }

@@ -1,0 +1,32 @@
+group 'be.isach'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Samaritan',
+                'Implementation-Version': version,
+                'Main-Class': 'fr.vavaballz.gamy.Main'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url  "http://dl.bintray.com/dv8fromtheworld/maven"
+    }
+}
+
+
+dependencies {
+    compile "net.dv8tion:JDA:1.3.0_215"
+}

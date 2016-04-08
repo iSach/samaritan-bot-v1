@@ -1,9 +1,9 @@
 package be.isach.samaritan.command.user.commands;
 
 import be.isach.samaritan.command.user.UserCommand;
-import be.isach.samaritan.util.Helper;
-import me.itsghost.jdiscord.talkable.Group;
-import me.itsghost.jdiscord.talkable.User;
+import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.MessageChannel;
+import net.dv8tion.jda.entities.User;
 
 /**
  * Created by Sacha on 6/01/16.
@@ -11,29 +11,33 @@ import me.itsghost.jdiscord.talkable.User;
 public class BroadcastCommand extends UserCommand {
 
     public BroadcastCommand() {
-        super("print", true, "say", "broadcast");
+        super("print", true, "broadcast");
     }
 
     @Override
-    public void onFirstExecute(String[] args, User user) {
-        print(args);
+    public void onFirstExecute(String[] args, User user, Guild guild) {
+        print(args, guild);
     }
 
     @Override
-    public void onSecondExecute(String[] args, User user) {
-        print(args);
+    public void onSecondExecute(String[] args, User user, Guild guild) {
+        print(args, guild);
     }
 
     @Override
-    public void onExecuteNoArgs(User user, Group group) {
+    public void onExecuteNoArgs(User user, MessageChannel group) {
         group.sendMessage("What would you like to broadcast, " + user.getUsername() + "?");
     }
 
-    private void print(String[] args) {
+    private void print(String[] args, Guild guild) {
         StringBuilder stringBuilder = new StringBuilder();
         for (String arg : args)
             stringBuilder.append(arg + " ");
-        Helper.broadcast(stringBuilder.toString());
+        guild.getTextChannels().forEach(textChannel -> {
+            try {
+                textChannel.sendMessage(stringBuilder.toString());
+            } catch (Exception exc) {}
+        });
     }
 
 }
